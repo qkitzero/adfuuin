@@ -48,7 +48,10 @@ const checkForAds = (() => {
         adStartTime = Date.now();
 
         reloadTimer = setTimeout(() => {
-          void chrome.runtime.sendMessage({ type: RELOAD_TAB_MESSAGE_TYPE });
+          void chrome.runtime.sendMessage({
+            type: RELOAD_TAB_MESSAGE_TYPE,
+            payload: { time: Math.floor(videoElement.currentTime) },
+          });
           clearReloadTimer();
         }, RELOAD_DELAY_MS);
       }
