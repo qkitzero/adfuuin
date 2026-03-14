@@ -1,3 +1,7 @@
+import { createServiceToggle } from './serviceToggle';
+
+const isEnabled = createServiceToggle('youtube');
+
 const checkForAds = (() => {
   const AD_SELECTOR = '.ad-showing';
   const VIDEO_SELECTOR = 'video';
@@ -19,6 +23,18 @@ const checkForAds = (() => {
   };
 
   return () => {
+    if (!isEnabled()) {
+      if (isMutedByExtension) {
+        chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
+        isMutedByExtension = false;
+      }
+      if (adStartTime !== null) {
+        adStartTime = null;
+        clearReloadTimer();
+      }
+      return;
+    }
+
     const adShowing = document.querySelector(AD_SELECTOR);
     const videoElement = document.querySelector<HTMLVideoElement>(VIDEO_SELECTOR);
 

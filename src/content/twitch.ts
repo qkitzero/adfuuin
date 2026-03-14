@@ -1,3 +1,7 @@
+import { createServiceToggle } from './serviceToggle';
+
+const isEnabled = createServiceToggle('twitch');
+
 const checkForAds = (() => {
   const AD_SELECTORS = [
     '[data-a-target="video-ad-label"]',
@@ -12,6 +16,14 @@ const checkForAds = (() => {
   let isMutedByExtension = false;
 
   return () => {
+    if (!isEnabled()) {
+      if (isMutedByExtension) {
+        chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
+        isMutedByExtension = false;
+      }
+      return;
+    }
+
     const adShowing = AD_SELECTORS.some((selector) => document.querySelector(selector));
     const videoElement = document.querySelector(VIDEO_SELECTOR);
 

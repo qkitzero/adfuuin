@@ -1,3 +1,7 @@
+import { createServiceToggle } from './serviceToggle';
+
+const isEnabled = createServiceToggle('spotify');
+
 const checkForAds = (() => {
   const AD_KEYWORDS = ['広告', 'Advertisement', 'Audio Ad', 'Spotify'];
 
@@ -7,6 +11,14 @@ const checkForAds = (() => {
   let isMutedByExtension = false;
 
   return () => {
+    if (!isEnabled()) {
+      if (isMutedByExtension) {
+        chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
+        isMutedByExtension = false;
+      }
+      return;
+    }
+
     const pageTitle = document.title;
 
     const adShowing = AD_KEYWORDS.some((keyword) => pageTitle.includes(keyword));
