@@ -1,14 +1,6 @@
-let isEnabled = true;
+import { createServiceToggle } from './serviceToggle';
 
-chrome.storage.local.get('twitch', (result: { [key: string]: boolean }) => {
-  isEnabled = result.twitch ?? true;
-});
-
-chrome.storage.onChanged.addListener((changes) => {
-  if (changes.twitch) {
-    isEnabled = changes.twitch.newValue as boolean;
-  }
-});
+const isEnabled = createServiceToggle('twitch');
 
 const checkForAds = (() => {
   const AD_SELECTORS = [
@@ -24,7 +16,7 @@ const checkForAds = (() => {
   let isMutedByExtension = false;
 
   return () => {
-    if (!isEnabled) {
+    if (!isEnabled()) {
       if (isMutedByExtension) {
         chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
         isMutedByExtension = false;

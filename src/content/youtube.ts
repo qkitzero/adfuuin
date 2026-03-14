@@ -1,14 +1,6 @@
-let isEnabled = true;
+import { createServiceToggle } from './serviceToggle';
 
-chrome.storage.local.get("youtube", (result: { [key: string]: boolean }) => {
-  isEnabled = result.youtube ?? true;
-});
-
-chrome.storage.onChanged.addListener((changes) => {
-  if (changes.youtube) {
-    isEnabled = changes.youtube.newValue as boolean;
-  }
-});
+const isEnabled = createServiceToggle('youtube');
 
 const checkForAds = (() => {
   const AD_SELECTOR = '.ad-showing';
@@ -31,7 +23,7 @@ const checkForAds = (() => {
   };
 
   return () => {
-    if (!isEnabled) {
+    if (!isEnabled()) {
       if (isMutedByExtension) {
         chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
         isMutedByExtension = false;
