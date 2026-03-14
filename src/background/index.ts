@@ -1,8 +1,8 @@
 chrome.runtime.onMessage.addListener(
   (
-    message: { type: string; payload?: any },
+    message: { type: string; payload?: unknown },
     sender: chrome.runtime.MessageSender,
-    sendResponse: (response?: any) => void,
+    _sendResponse: (response?: unknown) => void,
   ) => {
     if (!sender.tab || sender.tab.id === undefined) {
       return;
