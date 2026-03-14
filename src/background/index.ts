@@ -1,3 +1,5 @@
+import { MESSAGE_TYPES } from '../shared/messages';
+
 chrome.runtime.onMessage.addListener(
   (
     message: { type: string; payload?: unknown },
@@ -11,17 +13,17 @@ chrome.runtime.onMessage.addListener(
     const tabId = sender.tab.id;
 
     switch (message.type) {
-      case 'MUTE_TAB':
+      case MESSAGE_TYPES.MUTE_TAB:
         chrome.tabs.update(tabId, { muted: true }).catch((err) => {
           console.error('Failed to mute tab:', err);
         });
         break;
-      case 'UNMUTE_TAB':
+      case MESSAGE_TYPES.UNMUTE_TAB:
         chrome.tabs.update(tabId, { muted: false }).catch((err) => {
           console.error('Failed to unmute tab:', err);
         });
         break;
-      case 'RELOAD_TAB':
+      case MESSAGE_TYPES.RELOAD_TAB:
         chrome.tabs
           .get(tabId)
           .then(async (tab) => {

@@ -1,59 +1,11 @@
-import { createServiceToggle } from './serviceToggle';
+import { createAdMuter } from './createAdMuter';
 
-const isEnabled = createServiceToggle('spotify');
+const AD_KEYWORDS = ['広告', 'Advertisement', 'Audio Ad', 'Spotify'];
 
-const checkForAds = (() => {
-  const AD_KEYWORDS = ['広告', 'Advertisement', 'Audio Ad', 'Spotify'];
-
-  const MUTE_MESSAGE_TYPE = 'MUTE_TAB';
-  const UNMUTE_MESSAGE_TYPE = 'UNMUTE_TAB';
-
-  let isMutedByExtension = false;
-
-  return () => {
-    if (!isEnabled()) {
-      if (isMutedByExtension) {
-        void chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
-        isMutedByExtension = false;
-      }
-      return;
-    }
-
-    const pageTitle = document.title;
-
-    const adShowing = AD_KEYWORDS.some((keyword) => pageTitle.includes(keyword));
-
-    if (adShowing) {
-      if (!isMutedByExtension) {
-        void chrome.runtime.sendMessage({ type: MUTE_MESSAGE_TYPE });
-        isMutedByExtension = true;
-      }
-    } else {
-      if (isMutedByExtension) {
-        void chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
-        isMutedByExtension = false;
-      }
-    }
-  };
-})();
-
-const startObserving = () => {
-  const targetNode = document.body;
-
-  if (targetNode) {
-    const observer = new MutationObserver(() => {
-      checkForAds();
-    });
-
-    observer.observe(targetNode, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      characterData: true,
-    });
-  } else {
-    setTimeout(startObserving, 500);
-  }
-};
-
-startObserving();
+createAdMuter({
+  serviceKey: 'spotify',
+  detectAd: () => {
+    return AD_KEYWORDS.some((keyword) => document.title.includes(keyword));
+  },
+  getObserveTarget: () => document.body,
+});
