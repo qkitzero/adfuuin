@@ -37,8 +37,7 @@ export const Popup = () => {
         {SERVICES.map(({ key, label }) => (
           <li
             key={key}
-            className="flex items-center justify-between cursor-pointer"
-            onClick={() => handleToggle(key)}
+            className="flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
               <div
@@ -58,7 +57,7 @@ export const Popup = () => {
               type="button"
               role="switch"
               aria-checked={settings[key]}
-
+              onClick={() => handleToggle(key)}
               className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-all duration-300 ease-in-out ${
                 settings[key]
                   ? "bg-gradient-to-r from-blue-500 to-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.4)]"
