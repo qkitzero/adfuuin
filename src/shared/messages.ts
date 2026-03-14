@@ -1,0 +1,5 @@
+export const MESSAGE_TYPES = {
+  MUTE_TAB: 'MUTE_TAB',
+  UNMUTE_TAB: 'UNMUTE_TAB',
+  RELOAD_TAB: 'RELOAD_TAB',
+} as const;
