@@ -1,62 +1,19 @@
-import { createServiceToggle } from './serviceToggle';
+import { createAdMuter } from './createAdMuter';
 
-const isEnabled = createServiceToggle('twitch');
+const AD_SELECTORS = [
+  '[data-a-target="video-ad-label"]',
+  '[data-a-target="ad-countdown-container"]',
+  '.ad-showing',
+];
+const VIDEO_SELECTOR = 'video';
 
-const checkForAds = (() => {
-  const AD_SELECTORS = [
-    '[data-a-target="video-ad-label"]',
-    '[data-a-target="ad-countdown-container"]',
-    '.ad-showing',
-  ];
-
-  const VIDEO_SELECTOR = 'video';
-  const MUTE_MESSAGE_TYPE = 'MUTE_TAB';
-  const UNMUTE_MESSAGE_TYPE = 'UNMUTE_TAB';
-
-  let isMutedByExtension = false;
-
-  return () => {
-    if (!isEnabled()) {
-      if (isMutedByExtension) {
-        void chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
-        isMutedByExtension = false;
-      }
-      return;
-    }
-
-    const adShowing = AD_SELECTORS.some((selector) => document.querySelector(selector));
-    const videoElement = document.querySelector(VIDEO_SELECTOR);
-
-    if (adShowing && videoElement) {
-      if (!isMutedByExtension) {
-        void chrome.runtime.sendMessage({ type: MUTE_MESSAGE_TYPE });
-        isMutedByExtension = true;
-      }
-    } else {
-      if (isMutedByExtension) {
-        void chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
-        isMutedByExtension = false;
-      }
-    }
-  };
-})();
-
-const startObserving = () => {
-  const targetNode = document.body;
-
-  if (targetNode) {
-    const observer = new MutationObserver(() => {
-      checkForAds();
-    });
-
-    observer.observe(targetNode, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-    });
-  } else {
-    setTimeout(startObserving, 500);
-  }
-};
-
-startObserving();
+createAdMuter({
+  serviceKey: 'twitch',
+  detectAd: () => {
+    return (
+      AD_SELECTORS.some((selector) => document.querySelector(selector)) &&
+      !!document.querySelector(VIDEO_SELECTOR)
+    );
+  },
+  getObserveTarget: () => document.body,
+});
