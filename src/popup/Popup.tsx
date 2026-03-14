@@ -18,11 +18,8 @@ export const Popup = () => {
   const [settings, setSettings] = useState<Record<ServiceKey, boolean>>(DEFAULT_SETTINGS);
 
   useEffect(() => {
-    chrome.storage.local.get(Object.keys(DEFAULT_SETTINGS), (result) => {
-      setSettings((prev) => ({
-        ...prev,
-        ...result,
-      }));
+    chrome.storage.local.get(DEFAULT_SETTINGS, (result) => {
+      setSettings(result as Record<ServiceKey, boolean>);
     });
   }, []);
 
