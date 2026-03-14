@@ -4,7 +4,7 @@ const checkForAds = (() => {
   const MUTE_MESSAGE_TYPE = 'MUTE_TAB';
   const UNMUTE_MESSAGE_TYPE = 'UNMUTE_TAB';
   const RELOAD_TAB_MESSAGE_TYPE = 'RELOAD_TAB';
-  const RELOAD_DELAY_MS = 2000;
+  const RELOAD_DELAY_MS = 1000;
 
   let isMutedByExtension = false;
 
