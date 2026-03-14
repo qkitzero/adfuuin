@@ -22,9 +22,23 @@ chrome.runtime.onMessage.addListener(
         });
         break;
       case 'RELOAD_TAB':
-        chrome.tabs.reload(tabId).catch((err) => {
-          console.error('Failed to reload tab:', err);
-        });
+        chrome.tabs
+          .get(tabId)
+          .then(async (tab) => {
+            if (!tab.url) {
+              await chrome.tabs.reload(tabId);
+              return;
+            }
+            const url = new URL(tab.url);
+            const time = (message.payload as { time?: number })?.time;
+            if (time !== undefined && time > 0) {
+              url.searchParams.set('t', String(time));
+            }
+            await chrome.tabs.update(tabId, { url: url.toString() });
+          })
+          .catch((err) => {
+            console.error('Failed to reload tab:', err);
+          });
         break;
     }
   },
