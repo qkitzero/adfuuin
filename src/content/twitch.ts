@@ -1,3 +1,15 @@
+let isEnabled = true;
+
+chrome.storage.local.get('twitch', (result: { [key: string]: boolean }) => {
+  isEnabled = result.twitch ?? true;
+});
+
+chrome.storage.onChanged.addListener((changes) => {
+  if (changes.twitch) {
+    isEnabled = changes.twitch.newValue as boolean;
+  }
+});
+
 const checkForAds = (() => {
   const AD_SELECTORS = [
     '[data-a-target="video-ad-label"]',
@@ -12,6 +24,14 @@ const checkForAds = (() => {
   let isMutedByExtension = false;
 
   return () => {
+    if (!isEnabled) {
+      if (isMutedByExtension) {
+        chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
+        isMutedByExtension = false;
+      }
+      return;
+    }
+
     const adShowing = AD_SELECTORS.some((selector) => document.querySelector(selector));
     const videoElement = document.querySelector(VIDEO_SELECTOR);
 

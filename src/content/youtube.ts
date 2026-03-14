@@ -1,3 +1,15 @@
+let isEnabled = true;
+
+chrome.storage.local.get("youtube", (result: { [key: string]: boolean }) => {
+  isEnabled = result.youtube ?? true;
+});
+
+chrome.storage.onChanged.addListener((changes) => {
+  if (changes.youtube) {
+    isEnabled = changes.youtube.newValue as boolean;
+  }
+});
+
 const checkForAds = (() => {
   const AD_SELECTOR = '.ad-showing';
   const VIDEO_SELECTOR = 'video';
@@ -19,6 +31,18 @@ const checkForAds = (() => {
   };
 
   return () => {
+    if (!isEnabled) {
+      if (isMutedByExtension) {
+        chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
+        isMutedByExtension = false;
+      }
+      if (adStartTime !== null) {
+        adStartTime = null;
+        clearReloadTimer();
+      }
+      return;
+    }
+
     const adShowing = document.querySelector(AD_SELECTOR);
     const videoElement = document.querySelector<HTMLVideoElement>(VIDEO_SELECTOR);
 
