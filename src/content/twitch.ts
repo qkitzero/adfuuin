@@ -18,7 +18,7 @@ const checkForAds = (() => {
   return () => {
     if (!isEnabled()) {
       if (isMutedByExtension) {
-        chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
+        void chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
         isMutedByExtension = false;
       }
       return;
@@ -29,12 +29,12 @@ const checkForAds = (() => {
 
     if (adShowing && videoElement) {
       if (!isMutedByExtension) {
-        chrome.runtime.sendMessage({ type: MUTE_MESSAGE_TYPE });
+        void chrome.runtime.sendMessage({ type: MUTE_MESSAGE_TYPE });
         isMutedByExtension = true;
       }
     } else {
       if (isMutedByExtension) {
-        chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
+        void chrome.runtime.sendMessage({ type: UNMUTE_MESSAGE_TYPE });
         isMutedByExtension = false;
       }
     }
