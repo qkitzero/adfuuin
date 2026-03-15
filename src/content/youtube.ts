@@ -3,7 +3,7 @@ import { createAdMuter } from './createAdMuter';
 
 const AD_SELECTOR = '.ad-showing';
 const VIDEO_SELECTOR = 'video';
-const RELOAD_DELAY_MS = 1000;
+const RELOAD_DELAY_MS = 7000;
 
 let reloadTimer: number | null = null;
 
