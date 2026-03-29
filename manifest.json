@@ -1,7 +1,7 @@
 {
-  "name": "Chrome Adfuuin",
-  "description": "",
-  "version": "1.0",
+  "name": "Adfuuin",
+  "description": "Automatically mutes browser tabs when ads play on streaming platforms",
+  "version": "1.0.0",
   "manifest_version": 3,
   "action": {
     "default_popup": "src/popup/index.html"
