@@ -30,7 +30,7 @@ npm run dev
 
 ### Loading the Extension Locally
 
-1. Run `npm run dev` to generate the build output.
+1. Run `npm run build` to generate the build output.
 2. Open `chrome://extensions/` in Chrome.
 3. Enable **Developer mode** (top right).
 4. Click **Load unpacked** and select the generated `dist` folder.
