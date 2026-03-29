@@ -27,9 +27,9 @@ jobs:
       - run: |
           VERSION=${GITHUB_REF_NAME}
           cd dist
-          zip -r "../chrome-adfuuin-${VERSION}.zip" .
+          zip -r "../adfuuin-${VERSION}.zip" .
 
       - uses: softprops/action-gh-release@v2
         with:
-          files: chrome-adfuuin-${{ github.ref_name }}.zip
+          files: adfuuin-${{ github.ref_name }}.zip
           generate_release_notes: true
