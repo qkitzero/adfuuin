@@ -1,3 +1,4 @@
+import { logger } from '../shared/logger';
 import { MESSAGE_TYPES } from '../shared/messages';
 
 chrome.runtime.onMessage.addListener(
@@ -15,12 +16,12 @@ chrome.runtime.onMessage.addListener(
     switch (message.type) {
       case MESSAGE_TYPES.MUTE_TAB:
         chrome.tabs.update(tabId, { muted: true }).catch((err) => {
-          console.error('Failed to mute tab:', err);
+          logger.error('Failed to mute tab:', err);
         });
         break;
       case MESSAGE_TYPES.UNMUTE_TAB:
         chrome.tabs.update(tabId, { muted: false }).catch((err) => {
-          console.error('Failed to unmute tab:', err);
+          logger.error('Failed to unmute tab:', err);
         });
         break;
       case MESSAGE_TYPES.RELOAD_TAB:
@@ -39,7 +40,7 @@ chrome.runtime.onMessage.addListener(
             await chrome.tabs.update(tabId, { url: url.toString() });
           })
           .catch((err) => {
-            console.error('Failed to reload tab:', err);
+            logger.error('Failed to reload tab:', err);
           });
         break;
     }
