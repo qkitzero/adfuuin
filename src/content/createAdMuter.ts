@@ -18,7 +18,7 @@ export const createAdMuter = (config: AdMuterConfig) => {
   const isEnabled = createServiceToggle(config.serviceKey);
 
   let isMutedByExtension = false;
-  let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  let debounceActive = false;
 
   const checkForAds = () => {
     if (!isEnabled()) {
@@ -52,10 +52,12 @@ export const createAdMuter = (config: AdMuterConfig) => {
 
     if (targetNode) {
       const observer = new MutationObserver(() => {
-        if (debounceTimer !== null) {
-          clearTimeout(debounceTimer);
-        }
-        debounceTimer = setTimeout(checkForAds, DEBOUNCE_DELAY_MS);
+        if (debounceActive) return;
+        debounceActive = true;
+        checkForAds();
+        setTimeout(() => {
+          debounceActive = false;
+        }, DEBOUNCE_DELAY_MS);
       });
 
       observer.observe(
