@@ -11,11 +11,14 @@ interface AdMuterConfig {
 }
 
 const MAX_RETRY_COUNT = 20;
+const RETRY_DELAY_MS = 500;
+const DEBOUNCE_DELAY_MS = 100;
 
 export const createAdMuter = (config: AdMuterConfig) => {
   const isEnabled = createServiceToggle(config.serviceKey);
 
   let isMutedByExtension = false;
+  let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
   const checkForAds = () => {
     if (!isEnabled()) {
@@ -49,7 +52,10 @@ export const createAdMuter = (config: AdMuterConfig) => {
 
     if (targetNode) {
       const observer = new MutationObserver(() => {
-        checkForAds();
+        if (debounceTimer !== null) {
+          clearTimeout(debounceTimer);
+        }
+        debounceTimer = setTimeout(checkForAds, DEBOUNCE_DELAY_MS);
       });
 
       observer.observe(
@@ -58,10 +64,11 @@ export const createAdMuter = (config: AdMuterConfig) => {
           childList: true,
           subtree: true,
           attributes: true,
+          attributeFilter: ['class'],
         },
       );
     } else if (retryCount < MAX_RETRY_COUNT) {
-      setTimeout(() => startObserving(retryCount + 1), 500);
+      setTimeout(() => startObserving(retryCount + 1), RETRY_DELAY_MS);
     }
   };
 

@@ -4,6 +4,7 @@ import { createAdMuter } from './createAdMuter';
 const AD_SELECTOR = '.ad-showing';
 const VIDEO_SELECTOR = 'video';
 const RELOAD_DELAY_MS = 7000;
+const TIME_TRACKING_INTERVAL_MS = 1000;
 
 let reloadTimer: number | null = null;
 let lastKnownTime = 0;
@@ -17,7 +18,7 @@ const startTimeTracking = () => {
     if (video) {
       lastKnownTime = Math.floor(video.currentTime);
     }
-  }, 1000);
+  }, TIME_TRACKING_INTERVAL_MS);
 };
 
 const stopTimeTracking = () => {
