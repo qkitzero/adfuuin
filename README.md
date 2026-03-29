@@ -23,21 +23,6 @@ Each service can be individually enabled or disabled from the popup UI.
 3. Enable **Developer mode** (top right).
 4. Click **Load unpacked** and select the extracted folder.
 
-## Development
-
-```sh
-npm install
-npm run dev
-```
-
-Other available scripts:
-
-```sh
-npm run lint       # Run ESLint
-npm run lint:fix   # Auto-fix lint issues
-npm run format     # Format code with Prettier
-```
-
 ## Privacy
 
 Adfuuin requests only two permissions:
@@ -51,18 +36,3 @@ The extension:
 - Does **not** collect, transmit, or share any user data.
 - Does **not** make any external network requests.
 - Runs content scripts only on matching domains (`youtube.com`, `twitch.tv`, `open.spotify.com`).
-
-## Contributing
-
-Contributions are welcome! To get started:
-
-1. Fork the repository and create a feature branch.
-2. Run `npm install` to set up the development environment.
-3. Make your changes and ensure they pass linting (`npm run lint`).
-4. Submit a pull request.
-
-Please keep PRs focused — the project enforces a limit of 15 files and 500 lines (in `src/`) per PR.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
