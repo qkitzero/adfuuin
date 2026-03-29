@@ -1,6 +1,14 @@
 {
   "name": "adfuuin",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Automatically mutes browser tabs when ads play on streaming platforms",
+  "license": "MIT",
+  "homepage": "https://github.com/qkitzero/adfuuin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qkitzero/adfuuin.git"
+  },
+  "author": "qkitzero",
   "main": "popup.js",
   "scripts": {
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",

@@ -65,4 +65,4 @@ Please keep PRs focused — the project enforces a limit of 15 files and 500 lin
 
 ## License
 
-This project does not yet have an explicit license. See [GitHub's licensing guide](https://choosealicense.com/) for more information.
+This project is licensed under the [MIT License](LICENSE).
