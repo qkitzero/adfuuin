@@ -9,6 +9,11 @@ const TIME_TRACKING_INTERVAL_MS = 1000;
 let reloadTimer: number | null = null;
 let lastKnownTime = 0;
 let timeTracker: number | null = null;
+let trackedVideo: HTMLVideoElement | null = null;
+
+const handleVideoLoadStart = () => {
+  lastKnownTime = 0;
+};
 
 const startTimeTracking = () => {
   stopTimeTracking();
@@ -16,6 +21,11 @@ const startTimeTracking = () => {
     if (document.querySelector(AD_SELECTOR)) return;
     const video = document.querySelector<HTMLVideoElement>(VIDEO_SELECTOR);
     if (video) {
+      if (video !== trackedVideo) {
+        trackedVideo?.removeEventListener('loadstart', handleVideoLoadStart);
+        video.addEventListener('loadstart', handleVideoLoadStart);
+        trackedVideo = video;
+      }
       lastKnownTime = Math.floor(video.currentTime);
     }
   }, TIME_TRACKING_INTERVAL_MS);
