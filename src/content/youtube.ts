@@ -25,6 +25,7 @@ const startTimeTracking = () => {
         trackedVideo?.removeEventListener('loadstart', handleVideoLoadStart);
         video.addEventListener('loadstart', handleVideoLoadStart);
         trackedVideo = video;
+        lastKnownTime = 0;
       }
       lastKnownTime = Math.floor(video.currentTime);
     }
