@@ -26,6 +26,12 @@
       "js": ["src/content/youtubemusic.js"]
     },
     {
+      "matches": ["*://music.youtube.com/*"],
+      "js": ["src/content/disableBeforeunload.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
       "matches": ["*://www.twitch.tv/*"],
       "js": ["src/content/twitch.js"]
     },
