@@ -29,6 +29,7 @@ chrome.runtime.onMessage.addListener(
           .get(tabId)
           .then(async (tab) => {
             if (!tab.url) {
+              await chrome.tabs.update(tabId, { muted: false });
               await chrome.tabs.reload(tabId);
               return;
             }
@@ -37,7 +38,7 @@ chrome.runtime.onMessage.addListener(
             if (time !== undefined && time > 0) {
               url.searchParams.set('t', String(time));
             }
-            await chrome.tabs.update(tabId, { url: url.toString() });
+            await chrome.tabs.update(tabId, { url: url.toString(), muted: false });
           })
           .catch((err) => {
             logger.error('Failed to reload tab:', err);
