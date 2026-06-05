@@ -28,16 +28,15 @@ chrome.runtime.onMessage.addListener(
         chrome.tabs
           .get(tabId)
           .then(async (tab) => {
-            if (!tab.url) {
-              await chrome.tabs.reload(tabId);
-              return;
-            }
-            const url = new URL(tab.url);
             const time = (message.payload as { time?: number })?.time;
-            if (time !== undefined && time > 0) {
+            if (tab.url && time !== undefined && time > 0) {
+              const url = new URL(tab.url);
               url.searchParams.set('t', String(time));
+              await chrome.tabs.update(tabId, { url: url.toString(), muted: false });
+            } else {
+              await chrome.tabs.update(tabId, { muted: false });
+              await chrome.tabs.reload(tabId);
             }
-            await chrome.tabs.update(tabId, { url: url.toString() });
           })
           .catch((err) => {
             logger.error('Failed to reload tab:', err);
