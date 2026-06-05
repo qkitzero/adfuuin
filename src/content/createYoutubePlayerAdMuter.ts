@@ -18,7 +18,7 @@ export const createYoutubePlayerAdMuter = (serviceKey: string) => {
 
   const startTimeTracking = () => {
     stopTimeTracking();
-    timeTracker = setInterval(() => {
+    timeTracker = window.setInterval(() => {
       if (document.querySelector(AD_SELECTOR)) return;
       const video = document.querySelector<HTMLVideoElement>(VIDEO_SELECTOR);
       if (video) {
@@ -35,14 +35,14 @@ export const createYoutubePlayerAdMuter = (serviceKey: string) => {
 
   const stopTimeTracking = () => {
     if (timeTracker !== null) {
-      clearInterval(timeTracker);
+      window.clearInterval(timeTracker);
       timeTracker = null;
     }
   };
 
   const clearReloadTimer = () => {
     if (reloadTimer !== null) {
-      clearTimeout(reloadTimer);
+      window.clearTimeout(reloadTimer);
       reloadTimer = null;
     }
   };
@@ -56,7 +56,7 @@ export const createYoutubePlayerAdMuter = (serviceKey: string) => {
     onAdStart: () => {
       const savedTime = lastKnownTime;
 
-      reloadTimer = setTimeout(() => {
+      reloadTimer = window.setTimeout(() => {
         void chrome.runtime.sendMessage({
           type: MESSAGE_TYPES.RELOAD_TAB,
           payload: { time: savedTime },
