@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 
-type ServiceKey = 'youtube' | 'twitch' | 'spotify';
+type ServiceKey = 'youtube' | 'youtubemusic' | 'twitch' | 'spotify';
 
 const SERVICES: { key: ServiceKey; label: string }[] = [
   { key: 'youtube', label: 'YouTube' },
+  { key: 'youtubemusic', label: 'YouTube Music' },
   { key: 'twitch', label: 'Twitch' },
   { key: 'spotify', label: 'Spotify' },
 ];
 
 const DEFAULT_SETTINGS: Record<ServiceKey, boolean> = {
   youtube: true,
+  youtubemusic: true,
   twitch: true,
   spotify: true,
 };

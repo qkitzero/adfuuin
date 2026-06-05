@@ -11,6 +11,7 @@ Adfuuin monitors supported streaming sites for ad playback using DOM observation
 | Service | Detection Method |
 |---------|-----------------|
 | **YouTube** | Detects `.ad-showing` class on the video player. Also tracks playback position and reloads to resume where you left off. |
+| **YouTube Music** | Detects `.ad-showing` class on the shared YouTube player. Also tracks playback position and reloads to resume where you left off. |
 | **Twitch** | Detects ad-related DOM elements (`video-ad-label`, `ad-countdown-container`, `.ad-showing`). |
 | **Spotify** | Detects ad-related keywords in the document title (e.g. "Advertisement", "Audio Ad"). |
 
@@ -35,4 +36,4 @@ The extension:
 - Stores only boolean on/off settings per service in `chrome.storage.local`.
 - Does **not** collect, transmit, or share any user data.
 - Does **not** make any external network requests.
-- Runs content scripts only on matching domains (`youtube.com`, `twitch.tv`, `open.spotify.com`).
+- Runs content scripts only on matching domains (`youtube.com`, `music.youtube.com`, `twitch.tv`, `open.spotify.com`).
