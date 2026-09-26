@@ -1,3 +1,3 @@
 import { createYoutubePlayerAdMuter } from './createYoutubePlayerAdMuter';
 
-createYoutubePlayerAdMuter('youtubemusic');
+createYoutubePlayerAdMuter('youtubemusic', { reloadOnAd: false });
