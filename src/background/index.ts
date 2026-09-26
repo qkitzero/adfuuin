@@ -3,8 +3,6 @@ import { MESSAGE_TYPES, type Message } from '../shared/messages';
 
 const tabQueues = new Map<number, Promise<void>>();
 
-// Tasks read the tab's mute state before updating it, so run them one at a time per tab
-// to keep a quick mute/unmute sequence from acting on a stale state.
 const enqueue = (tabId: number, task: () => Promise<void>) => {
   const result = (tabQueues.get(tabId) ?? Promise.resolve()).then(task);
   const settled = result.catch(() => {});
@@ -22,14 +20,12 @@ const isMutedByThisExtension = (mutedInfo?: chrome.tabs.MutedInfo) =>
   mutedInfo.reason === 'extension' &&
   mutedInfo.extensionId === chrome.runtime.id;
 
-// Leave tabs the user has already muted as they are.
 const muteTab = async (tabId: number) => {
   const tab = await chrome.tabs.get(tabId);
   if (tab.mutedInfo?.muted) return;
   await chrome.tabs.update(tabId, { muted: true });
 };
 
-// Only unmute if this extension muted the tab, so a mute set by the user is kept.
 const unmuteTab = async (tabId: number) => {
   const tab = await chrome.tabs.get(tabId);
   if (!isMutedByThisExtension(tab.mutedInfo)) return;
@@ -63,9 +59,7 @@ chrome.runtime.onMessage.addListener(
         enqueue(tabId, async () => {
           const tab = await chrome.tabs.get(tabId);
           const { time } = message.payload;
-          // Keep the tab muted if the user muted it, not this extension.
           const shouldUnmute = isMutedByThisExtension(tab.mutedInfo);
-          // sender.url is available without the "tabs" permission, unlike tab.url.
           if (sender.url && time > 0) {
             const url = new URL(sender.url);
             url.searchParams.set('t', String(time));

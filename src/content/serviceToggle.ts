@@ -4,8 +4,6 @@ export const createServiceToggle = (
   serviceKey: ServiceKey,
   onChange?: (enabled: boolean) => void,
 ) => {
-  // Treat the service as disabled until the stored setting is loaded, so a disabled service is
-  // never muted during startup. onChange is called once the real value is known.
   let enabled = false;
 
   chrome.storage.local.get(serviceKey, (result: { [key: string]: boolean | undefined }) => {

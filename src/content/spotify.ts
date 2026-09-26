@@ -7,7 +7,6 @@ createAdMuter({
   detectAd: () => {
     return AD_KEYWORDS.some((keyword) => document.title.includes(keyword));
   },
-  // Observe the whole <head> so a replaced <title> element is still detected.
   getObserveTarget: () => document.head,
   observerOptions: {
     childList: true,
