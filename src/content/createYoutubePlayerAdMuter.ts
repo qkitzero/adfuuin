@@ -103,9 +103,15 @@ export const createYoutubePlayerAdMuter = (
     onAdEnd: () => {
       clearReloadTimer();
     },
+    // Track the playback position only while it can be used for a reload.
+    onEnabledChange: (enabled) => {
+      if (enabled && reloadOnAd) {
+        startTimeTracking();
+      } else {
+        stopTimeTracking();
+        // The position goes stale while not tracked; don't resume from it after re-enabling.
+        lastKnownTime = 0;
+      }
+    },
   });
-
-  if (reloadOnAd) {
-    startTimeTracking();
-  }
 };
