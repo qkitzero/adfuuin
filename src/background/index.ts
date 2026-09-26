@@ -65,8 +65,9 @@ chrome.runtime.onMessage.addListener(
           const time = (message.payload as { time?: number })?.time;
           // Keep the tab muted if the user muted it, not this extension.
           const shouldUnmute = isMutedByThisExtension(tab.mutedInfo);
-          if (tab.url && time !== undefined && time > 0) {
-            const url = new URL(tab.url);
+          // sender.url is available without the "tabs" permission, unlike tab.url.
+          if (sender.url && time !== undefined && time > 0) {
+            const url = new URL(sender.url);
             url.searchParams.set('t', String(time));
             await chrome.tabs.update(tabId, {
               url: url.toString(),
