@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
+  DEFAULT_SERVICE_ENABLED,
   DEFAULT_SETTINGS,
   SERVICES,
   type ServiceKey,
@@ -13,6 +14,26 @@ export const Popup = () => {
     chrome.storage.local.get(DEFAULT_SETTINGS, (result) => {
       setSettings(result as ServiceSettings);
     });
+
+    // Follow changes made elsewhere (e.g. the popup in another window).
+    const handleStorageChange = (
+      changes: { [key: string]: chrome.storage.StorageChange },
+      areaName: string,
+    ) => {
+      if (areaName !== 'local') return;
+      setSettings((prev) => {
+        const next = { ...prev };
+        for (const { key } of SERVICES) {
+          if (key in changes) {
+            next[key] = (changes[key].newValue as boolean | undefined) ?? DEFAULT_SERVICE_ENABLED;
+          }
+        }
+        return next;
+      });
+    };
+
+    chrome.storage.onChanged.addListener(handleStorageChange);
+    return () => chrome.storage.onChanged.removeListener(handleStorageChange);
   }, []);
 
   const handleToggle = (key: ServiceKey) => {

@@ -9,6 +9,7 @@ interface AdMuterConfig {
   observerOptions?: MutationObserverInit;
   onAdStart?: () => void;
   onAdEnd?: () => void;
+  onEnabledChange?: (enabled: boolean) => void;
 }
 
 const THROTTLE_DELAY_MS = 100;
@@ -16,7 +17,10 @@ const PAGESHOW_CHECK_DELAY_MS = 500;
 
 export const createAdMuter = (config: AdMuterConfig) => {
   // Re-check when the setting is loaded or changed, so toggling in the popup applies immediately.
-  const isEnabled = createServiceToggle(config.serviceKey, () => scheduleCheck());
+  const isEnabled = createServiceToggle(config.serviceKey, (enabled) => {
+    config.onEnabledChange?.(enabled);
+    scheduleCheck();
+  });
 
   let isMutedByExtension = false;
   let throttleTimer: number | null = null;
