@@ -26,6 +26,7 @@ npm run dev
 | `npm run build`  | Build for production         |
 | `npm run lint`   | Run ESLint                   |
 | `npm run lint:fix` | Auto-fix lint issues       |
+| `npm run typecheck` | Type-check with TypeScript |
 | `npm run format` | Format code with Prettier    |
 
 ### Loading the Extension Locally
@@ -37,7 +38,7 @@ npm run dev
 
 ## Branch Naming
 
-Create branches from `main` using the following format:
+Create branches from `develop` using the following format:
 
 ```
 feature/<issue-number>
@@ -67,18 +68,19 @@ feat: add mute support for new platform (#70)
 ## Pull Request Process
 
 1. **Fork** the repository and create a feature branch (`feature/<issue-number>`).
-2. Make your changes and verify they pass linting:
+2. Make your changes and verify they pass linting and type checking:
    ```sh
    npm run lint
+   npm run typecheck
    npm run format
    ```
 3. Commit your changes following the commit conventions above.
-4. **Push** your branch and open a pull request against `main`.
+4. **Push** your branch and open a pull request against `develop`.
 5. Fill in the PR description with a summary of your changes.
 
 ### PR Size Limits
 
-To keep reviews manageable, the project enforces the following limits per PR:
+To keep reviews manageable, please keep each PR within the following guidelines (not enforced automatically):
 
 - **15 files** maximum
 - **500 lines** maximum in `src/`
@@ -91,4 +93,4 @@ To keep reviews manageable, the project enforces the following limits per PR:
 - **Formatter**: Prettier (config in `.prettierrc`)
 - **Linter**: ESLint with TypeScript support (config in `eslint.config.mjs`)
 
-Both are enforced automatically. Run `npm run format` and `npm run lint:fix` before committing to avoid issues.
+CI runs `npm run lint` (which also reports Prettier formatting issues via `eslint-plugin-prettier`), `npm run typecheck` and `npm run build` on every pull request. Run `npm run format` and `npm run lint:fix` before committing to avoid issues.

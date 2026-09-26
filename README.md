@@ -11,7 +11,7 @@ Adfuuin monitors supported streaming sites for ad playback using DOM observation
 | Service | Detection Method |
 |---------|-----------------|
 | **YouTube** | Detects `.ad-showing` class on the video player. Also tracks playback position and reloads to resume where you left off. |
-| **YouTube Music** | Detects `.ad-showing` class on the shared YouTube player. Also tracks playback position and reloads to resume where you left off. |
+| **YouTube Music** | Detects `.ad-showing` class on the shared YouTube player. Mutes only (no reload), so your queue is preserved. |
 | **Twitch** | Detects ad-related DOM elements (`video-ad-label`, `ad-countdown-container`, `.ad-showing`). |
 | **Spotify** | Detects ad-related keywords in the document title (e.g. "Advertisement", "Audio Ad"). |
 
@@ -26,10 +26,11 @@ Each service can be individually enabled or disabled from the popup UI.
 
 ## Privacy
 
-Adfuuin requests only two permissions:
+Adfuuin requests only one permission:
 
-- **tabs** — to mute/unmute and reload tabs when ads are detected.
 - **storage** — to save your per-service toggle preferences locally.
+
+Muting, unmuting and reloading the tab where an ad is playing do not require any additional permission.
 
 The extension:
 

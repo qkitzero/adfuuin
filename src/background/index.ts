@@ -1,9 +1,40 @@
 import { logger } from '../shared/logger';
-import { MESSAGE_TYPES } from '../shared/messages';
+import { MESSAGE_TYPES, type Message } from '../shared/messages';
+
+const tabQueues = new Map<number, Promise<void>>();
+
+const enqueue = (tabId: number, task: () => Promise<void>) => {
+  const result = (tabQueues.get(tabId) ?? Promise.resolve()).then(task);
+  const settled = result.catch(() => {});
+  tabQueues.set(tabId, settled);
+  void settled.then(() => {
+    if (tabQueues.get(tabId) === settled) {
+      tabQueues.delete(tabId);
+    }
+  });
+  return result;
+};
+
+const isMutedByThisExtension = (mutedInfo?: chrome.tabs.MutedInfo) =>
+  mutedInfo?.muted === true &&
+  mutedInfo.reason === 'extension' &&
+  mutedInfo.extensionId === chrome.runtime.id;
+
+const muteTab = async (tabId: number) => {
+  const tab = await chrome.tabs.get(tabId);
+  if (tab.mutedInfo?.muted) return;
+  await chrome.tabs.update(tabId, { muted: true });
+};
+
+const unmuteTab = async (tabId: number) => {
+  const tab = await chrome.tabs.get(tabId);
+  if (!isMutedByThisExtension(tab.mutedInfo)) return;
+  await chrome.tabs.update(tabId, { muted: false });
+};
 
 chrome.runtime.onMessage.addListener(
   (
-    message: { type: string; payload?: unknown },
+    message: Message,
     sender: chrome.runtime.MessageSender,
     _sendResponse: (response?: unknown) => void,
   ) => {
@@ -15,32 +46,36 @@ chrome.runtime.onMessage.addListener(
 
     switch (message.type) {
       case MESSAGE_TYPES.MUTE_TAB:
-        chrome.tabs.update(tabId, { muted: true }).catch((err) => {
+        enqueue(tabId, () => muteTab(tabId)).catch((err) => {
           logger.error('Failed to mute tab:', err);
         });
         break;
       case MESSAGE_TYPES.UNMUTE_TAB:
-        chrome.tabs.update(tabId, { muted: false }).catch((err) => {
+        enqueue(tabId, () => unmuteTab(tabId)).catch((err) => {
           logger.error('Failed to unmute tab:', err);
         });
         break;
       case MESSAGE_TYPES.RELOAD_TAB:
-        chrome.tabs
-          .get(tabId)
-          .then(async (tab) => {
-            const time = (message.payload as { time?: number })?.time;
-            if (tab.url && time !== undefined && time > 0) {
-              const url = new URL(tab.url);
-              url.searchParams.set('t', String(time));
-              await chrome.tabs.update(tabId, { url: url.toString(), muted: false });
-            } else {
+        enqueue(tabId, async () => {
+          const tab = await chrome.tabs.get(tabId);
+          const { time } = message.payload;
+          const shouldUnmute = isMutedByThisExtension(tab.mutedInfo);
+          if (sender.url && time > 0) {
+            const url = new URL(sender.url);
+            url.searchParams.set('t', String(time));
+            await chrome.tabs.update(tabId, {
+              url: url.toString(),
+              ...(shouldUnmute && { muted: false }),
+            });
+          } else {
+            if (shouldUnmute) {
               await chrome.tabs.update(tabId, { muted: false });
-              await chrome.tabs.reload(tabId);
             }
-          })
-          .catch((err) => {
-            logger.error('Failed to reload tab:', err);
-          });
+            await chrome.tabs.reload(tabId);
+          }
+        }).catch((err) => {
+          logger.error('Failed to reload tab:', err);
+        });
         break;
     }
   },

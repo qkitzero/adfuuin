@@ -12,7 +12,7 @@
     "48": "icon48.png",
     "128": "icon128.png"
   },
-  "permissions": ["tabs", "storage"],
+  "permissions": ["storage"],
   "background": {
     "service_worker": "src/background/index.js"
   },
@@ -24,12 +24,6 @@
     {
       "matches": ["*://music.youtube.com/*"],
       "js": ["src/content/youtubemusic.js"]
-    },
-    {
-      "matches": ["*://music.youtube.com/*"],
-      "js": ["src/content/disableBeforeunload.js"],
-      "run_at": "document_start",
-      "world": "MAIN"
     },
     {
       "matches": ["*://www.twitch.tv/*"],

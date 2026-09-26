@@ -16,7 +16,7 @@ export default tseslint.config(
         ...globals.browser,
       },
       parserOptions: {
-        project: true,
+        project: './tsconfig.app.json',
         tsconfigRootDir: import.meta.dirname,
       },
     },
