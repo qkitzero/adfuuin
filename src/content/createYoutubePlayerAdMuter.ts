@@ -1,4 +1,5 @@
-import { MESSAGE_TYPES } from '../shared/messages';
+import { MESSAGE_TYPES, sendMessage } from '../shared/messages';
+import type { ServiceKey } from '../shared/services';
 import { createAdMuter } from './createAdMuter';
 
 const AD_SELECTOR = '.ad-showing';
@@ -36,7 +37,7 @@ interface YoutubePlayerAdMuterOptions {
 }
 
 export const createYoutubePlayerAdMuter = (
-  serviceKey: string,
+  serviceKey: ServiceKey,
   { reloadOnAd = true }: YoutubePlayerAdMuterOptions = {},
 ) => {
   let reloadTimer: number | null = null;
@@ -92,7 +93,7 @@ export const createYoutubePlayerAdMuter = (
 
       reloadTimer = window.setTimeout(() => {
         setLastReloadAt(Date.now());
-        void chrome.runtime.sendMessage({
+        sendMessage({
           type: MESSAGE_TYPES.RELOAD_TAB,
           payload: { time: savedTime },
         });

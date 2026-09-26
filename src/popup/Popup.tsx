@@ -1,27 +1,17 @@
 import { useEffect, useState } from 'react';
-
-type ServiceKey = 'youtube' | 'youtubemusic' | 'twitch' | 'spotify';
-
-const SERVICES: { key: ServiceKey; label: string }[] = [
-  { key: 'youtube', label: 'YouTube' },
-  { key: 'youtubemusic', label: 'YouTube Music' },
-  { key: 'twitch', label: 'Twitch' },
-  { key: 'spotify', label: 'Spotify' },
-];
-
-const DEFAULT_SETTINGS: Record<ServiceKey, boolean> = {
-  youtube: true,
-  youtubemusic: true,
-  twitch: true,
-  spotify: true,
-};
+import {
+  DEFAULT_SETTINGS,
+  SERVICES,
+  type ServiceKey,
+  type ServiceSettings,
+} from '../shared/services';
 
 export const Popup = () => {
-  const [settings, setSettings] = useState<Record<ServiceKey, boolean>>(DEFAULT_SETTINGS);
+  const [settings, setSettings] = useState<ServiceSettings>(DEFAULT_SETTINGS);
 
   useEffect(() => {
     chrome.storage.local.get(DEFAULT_SETTINGS, (result) => {
-      setSettings(result as Record<ServiceKey, boolean>);
+      setSettings(result as ServiceSettings);
     });
   }, []);
 

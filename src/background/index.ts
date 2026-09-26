@@ -1,5 +1,5 @@
 import { logger } from '../shared/logger';
-import { MESSAGE_TYPES } from '../shared/messages';
+import { MESSAGE_TYPES, type Message } from '../shared/messages';
 
 const tabQueues = new Map<number, Promise<void>>();
 
@@ -38,7 +38,7 @@ const unmuteTab = async (tabId: number) => {
 
 chrome.runtime.onMessage.addListener(
   (
-    message: { type: string; payload?: unknown },
+    message: Message,
     sender: chrome.runtime.MessageSender,
     _sendResponse: (response?: unknown) => void,
   ) => {
@@ -62,11 +62,11 @@ chrome.runtime.onMessage.addListener(
       case MESSAGE_TYPES.RELOAD_TAB:
         enqueue(tabId, async () => {
           const tab = await chrome.tabs.get(tabId);
-          const time = (message.payload as { time?: number })?.time;
+          const { time } = message.payload;
           // Keep the tab muted if the user muted it, not this extension.
           const shouldUnmute = isMutedByThisExtension(tab.mutedInfo);
           // sender.url is available without the "tabs" permission, unlike tab.url.
-          if (sender.url && time !== undefined && time > 0) {
+          if (sender.url && time > 0) {
             const url = new URL(sender.url);
             url.searchParams.set('t', String(time));
             await chrome.tabs.update(tabId, {

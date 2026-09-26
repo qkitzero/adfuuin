@@ -1,8 +1,9 @@
-import { MESSAGE_TYPES } from '../shared/messages';
+import { MESSAGE_TYPES, sendMessage } from '../shared/messages';
+import type { ServiceKey } from '../shared/services';
 import { createServiceToggle } from './serviceToggle';
 
 interface AdMuterConfig {
-  serviceKey: string;
+  serviceKey: ServiceKey;
   detectAd: () => boolean;
   getObserveTarget: () => Node | null;
   observerOptions?: MutationObserverInit;
@@ -23,14 +24,14 @@ export const createAdMuter = (config: AdMuterConfig) => {
 
   const mute = () => {
     if (isMutedByExtension) return;
-    void chrome.runtime.sendMessage({ type: MESSAGE_TYPES.MUTE_TAB });
+    sendMessage({ type: MESSAGE_TYPES.MUTE_TAB });
     isMutedByExtension = true;
     config.onAdStart?.();
   };
 
   const unmute = () => {
     if (!isMutedByExtension) return;
-    void chrome.runtime.sendMessage({ type: MESSAGE_TYPES.UNMUTE_TAB });
+    sendMessage({ type: MESSAGE_TYPES.UNMUTE_TAB });
     isMutedByExtension = false;
     config.onAdEnd?.();
   };
