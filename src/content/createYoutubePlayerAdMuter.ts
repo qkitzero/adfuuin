@@ -5,6 +5,31 @@ const AD_SELECTOR = '.ad-showing';
 const VIDEO_SELECTOR = 'video';
 const RELOAD_DELAY_MS = 7000;
 const TIME_TRACKING_INTERVAL_MS = 1000;
+// YouTube often shows another ad right after a reload, so don't reload again within this window.
+const RELOAD_COOLDOWN_MS = 60000;
+const LAST_RELOAD_AT_KEY = 'adfuuin:lastReloadAt';
+
+// sessionStorage survives the reload within the same tab. Access can throw (e.g. storage blocked).
+const getLastReloadAt = () => {
+  try {
+    return Number(sessionStorage.getItem(LAST_RELOAD_AT_KEY)) || 0;
+  } catch {
+    return 0;
+  }
+};
+
+const setLastReloadAt = (time: number) => {
+  try {
+    sessionStorage.setItem(LAST_RELOAD_AT_KEY, String(time));
+  } catch {
+    // Without storage the cooldown can't be kept across reloads; reload as before.
+  }
+};
+
+const isInReloadCooldown = () => {
+  const elapsed = Date.now() - getLastReloadAt();
+  return elapsed >= 0 && elapsed < RELOAD_COOLDOWN_MS;
+};
 
 interface YoutubePlayerAdMuterOptions {
   reloadOnAd?: boolean;
@@ -61,11 +86,12 @@ export const createYoutubePlayerAdMuter = (
     },
     getObserveTarget: () => document.getElementById('movie_player'),
     onAdStart: () => {
-      if (!reloadOnAd) return;
+      if (!reloadOnAd || isInReloadCooldown()) return;
 
       const savedTime = lastKnownTime;
 
       reloadTimer = window.setTimeout(() => {
+        setLastReloadAt(Date.now());
         void chrome.runtime.sendMessage({
           type: MESSAGE_TYPES.RELOAD_TAB,
           payload: { time: savedTime },
