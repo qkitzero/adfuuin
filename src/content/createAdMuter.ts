@@ -10,8 +10,6 @@ interface AdMuterConfig {
   onAdEnd?: () => void;
 }
 
-const MAX_RETRY_COUNT = 20;
-const RETRY_DELAY_MS = 500;
 const DEBOUNCE_DELAY_MS = 100;
 
 export const createAdMuter = (config: AdMuterConfig) => {
@@ -47,32 +45,42 @@ export const createAdMuter = (config: AdMuterConfig) => {
     }
   };
 
-  const startObserving = (retryCount = 0) => {
-    const targetNode = config.getObserveTarget();
+  const observeTarget = (targetNode: Node) => {
+    const observer = new MutationObserver(() => {
+      if (debounceActive) return;
+      debounceActive = true;
+      checkForAds();
+      setTimeout(() => {
+        debounceActive = false;
+      }, DEBOUNCE_DELAY_MS);
+    });
 
-    if (targetNode) {
-      const observer = new MutationObserver(() => {
-        if (debounceActive) return;
-        debounceActive = true;
-        checkForAds();
-        setTimeout(() => {
-          debounceActive = false;
-        }, DEBOUNCE_DELAY_MS);
-      });
-
-      observer.observe(
-        targetNode,
-        config.observerOptions ?? {
-          childList: true,
-          subtree: true,
-          attributes: true,
-          attributeFilter: ['class'],
-        },
-      );
-    } else if (retryCount < MAX_RETRY_COUNT) {
-      setTimeout(() => startObserving(retryCount + 1), RETRY_DELAY_MS);
-    }
+    observer.observe(
+      targetNode,
+      config.observerOptions ?? {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class'],
+      },
+    );
   };
 
-  startObserving();
+  const targetNode = config.getObserveTarget();
+
+  if (targetNode) {
+    observeTarget(targetNode);
+  } else {
+    // SPA pages (e.g. YouTube) may render the target long after the content script runs,
+    // so wait for it instead of giving up after a fixed number of retries.
+    const targetWaiter = new MutationObserver(() => {
+      const node = config.getObserveTarget();
+      if (node) {
+        targetWaiter.disconnect();
+        observeTarget(node);
+      }
+    });
+
+    targetWaiter.observe(document.documentElement, { childList: true, subtree: true });
+  }
 };
