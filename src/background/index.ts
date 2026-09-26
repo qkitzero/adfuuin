@@ -32,6 +32,18 @@ const unmuteTab = async (tabId: number) => {
   await chrome.tabs.update(tabId, { muted: false });
 };
 
+const buildResumeUrl = (pageUrl: string, senderUrl: string | undefined, time: number) => {
+  if (!senderUrl || time <= 0) return null;
+  try {
+    const url = new URL(pageUrl);
+    if (url.origin !== new URL(senderUrl).origin) return null;
+    url.searchParams.set('t', String(time));
+    return url.toString();
+  } catch {
+    return null;
+  }
+};
+
 chrome.runtime.onMessage.addListener(
   (
     message: Message,
@@ -58,13 +70,12 @@ chrome.runtime.onMessage.addListener(
       case MESSAGE_TYPES.RELOAD_TAB:
         enqueue(tabId, async () => {
           const tab = await chrome.tabs.get(tabId);
-          const { time } = message.payload;
+          const { time, url } = message.payload;
           const shouldUnmute = isMutedByThisExtension(tab.mutedInfo);
-          if (sender.url && time > 0) {
-            const url = new URL(sender.url);
-            url.searchParams.set('t', String(time));
+          const resumeUrl = buildResumeUrl(url, sender.url, time);
+          if (resumeUrl) {
             await chrome.tabs.update(tabId, {
-              url: url.toString(),
+              url: resumeUrl,
               ...(shouldUnmute && { muted: false }),
             });
           } else {
