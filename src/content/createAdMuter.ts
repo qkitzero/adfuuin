@@ -10,14 +10,15 @@ interface AdMuterConfig {
   onAdEnd?: () => void;
 }
 
-const DEBOUNCE_DELAY_MS = 100;
+const THROTTLE_DELAY_MS = 100;
 const PAGESHOW_CHECK_DELAY_MS = 500;
 
 export const createAdMuter = (config: AdMuterConfig) => {
   const isEnabled = createServiceToggle(config.serviceKey);
 
   let isMutedByExtension = false;
-  let debounceActive = false;
+  let throttleTimer: number | null = null;
+  let hasPendingCheck = false;
 
   const mute = () => {
     if (isMutedByExtension) return;
@@ -41,15 +42,27 @@ export const createAdMuter = (config: AdMuterConfig) => {
     }
   };
 
+  // Check immediately on the first mutation, then at most once per THROTTLE_DELAY_MS.
+  // Mutations during the wait trigger one more check when it ends, so the last change is not missed.
+  const scheduleCheck = () => {
+    if (throttleTimer !== null) {
+      hasPendingCheck = true;
+      return;
+    }
+
+    checkForAds();
+
+    throttleTimer = window.setTimeout(() => {
+      throttleTimer = null;
+      if (hasPendingCheck) {
+        hasPendingCheck = false;
+        scheduleCheck();
+      }
+    }, THROTTLE_DELAY_MS);
+  };
+
   const observeTarget = (targetNode: Node) => {
-    const observer = new MutationObserver(() => {
-      if (debounceActive) return;
-      debounceActive = true;
-      checkForAds();
-      setTimeout(() => {
-        debounceActive = false;
-      }, DEBOUNCE_DELAY_MS);
-    });
+    const observer = new MutationObserver(scheduleCheck);
 
     observer.observe(
       targetNode,
