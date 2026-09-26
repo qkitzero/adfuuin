@@ -26,10 +26,11 @@ Each service can be individually enabled or disabled from the popup UI.
 
 ## Privacy
 
-Adfuuin requests only two permissions:
+Adfuuin requests only one permission:
 
-- **tabs** — to mute/unmute and reload tabs when ads are detected.
 - **storage** — to save your per-service toggle preferences locally.
+
+Muting, unmuting and reloading the tab where an ad is playing do not require any additional permission.
 
 The extension:
 
