@@ -9,12 +9,11 @@
     "url": "https://github.com/qkitzero/adfuuin.git"
   },
   "author": "qkitzero",
-  "main": "popup.js",
   "scripts": {
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc -b",
     "build": "vite build",
     "dev": "vite"
   },
@@ -28,6 +27,7 @@
     "@tailwindcss/vite": "^4.3.1",
     "@tsconfig/vite-react": "^7.0.2",
     "@types/chrome": "^0.1.31",
+    "@types/node": "^24.19.0",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.2.0",
