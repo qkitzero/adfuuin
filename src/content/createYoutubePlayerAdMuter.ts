@@ -89,12 +89,13 @@ export const createYoutubePlayerAdMuter = (
       if (!reloadOnAd || isInReloadCooldown()) return;
 
       const savedTime = lastKnownTime;
+      const savedUrl = location.href;
 
       reloadTimer = window.setTimeout(() => {
         setLastReloadAt(Date.now());
         sendMessage({
           type: MESSAGE_TYPES.RELOAD_TAB,
-          payload: { time: savedTime },
+          payload: { time: savedTime, url: savedUrl },
         });
         clearReloadTimer();
       }, RELOAD_DELAY_MS);
