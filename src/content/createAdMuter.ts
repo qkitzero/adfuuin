@@ -16,7 +16,6 @@ const THROTTLE_DELAY_MS = 100;
 const PAGESHOW_CHECK_DELAY_MS = 500;
 
 export const createAdMuter = (config: AdMuterConfig) => {
-  // Re-check when the setting is loaded or changed, so toggling in the popup applies immediately.
   const isEnabled = createServiceToggle(config.serviceKey, (enabled) => {
     config.onEnabledChange?.(enabled);
     scheduleCheck();
@@ -48,8 +47,6 @@ export const createAdMuter = (config: AdMuterConfig) => {
     }
   };
 
-  // Check immediately on the first mutation, then at most once per THROTTLE_DELAY_MS.
-  // Mutations during the wait trigger one more check when it ends, so the last change is not missed.
   const scheduleCheck = () => {
     if (throttleTimer !== null) {
       hasPendingCheck = true;
@@ -86,8 +83,6 @@ export const createAdMuter = (config: AdMuterConfig) => {
   if (targetNode) {
     observeTarget(targetNode);
   } else {
-    // SPA pages (e.g. YouTube) may render the target long after the content script runs,
-    // so wait for it instead of giving up after a fixed number of retries.
     const targetWaiter = new MutationObserver(() => {
       const node = config.getObserveTarget();
       if (node) {
@@ -99,12 +94,8 @@ export const createAdMuter = (config: AdMuterConfig) => {
     targetWaiter.observe(document.documentElement, { childList: true, subtree: true });
   }
 
-  // The muted state is lost when the page unloads, so unmute before leaving to avoid
-  // keeping the tab muted on the next page.
   window.addEventListener('pagehide', unmute);
 
-  // Restored from the back/forward cache: the tab was unmuted on pagehide, so check again.
-  // Delay the check so the unmute sent by the previous page is handled first.
   window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
       setTimeout(checkForAds, PAGESHOW_CHECK_DELAY_MS);

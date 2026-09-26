@@ -6,11 +6,9 @@ const AD_SELECTOR = '.ad-showing';
 const VIDEO_SELECTOR = 'video';
 const RELOAD_DELAY_MS = 7000;
 const TIME_TRACKING_INTERVAL_MS = 1000;
-// YouTube often shows another ad right after a reload, so don't reload again within this window.
 const RELOAD_COOLDOWN_MS = 60000;
 const LAST_RELOAD_AT_KEY = 'adfuuin:lastReloadAt';
 
-// sessionStorage survives the reload within the same tab. Access can throw (e.g. storage blocked).
 const getLastReloadAt = () => {
   try {
     return Number(sessionStorage.getItem(LAST_RELOAD_AT_KEY)) || 0;
@@ -22,8 +20,9 @@ const getLastReloadAt = () => {
 const setLastReloadAt = (time: number) => {
   try {
     sessionStorage.setItem(LAST_RELOAD_AT_KEY, String(time));
+    return true;
   } catch {
-    // Without storage the cooldown can't be kept across reloads; reload as before.
+    return false;
   }
 };
 
@@ -103,13 +102,11 @@ export const createYoutubePlayerAdMuter = (
     onAdEnd: () => {
       clearReloadTimer();
     },
-    // Track the playback position only while it can be used for a reload.
     onEnabledChange: (enabled) => {
       if (enabled && reloadOnAd) {
         startTimeTracking();
       } else {
         stopTimeTracking();
-        // The position goes stale while not tracked; don't resume from it after re-enabling.
         lastKnownTime = 0;
       }
     },

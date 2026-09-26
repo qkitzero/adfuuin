@@ -15,7 +15,6 @@ export const Popup = () => {
       setSettings(result as ServiceSettings);
     });
 
-    // Follow changes made elsewhere (e.g. the popup in another window).
     const handleStorageChange = (
       changes: { [key: string]: chrome.storage.StorageChange },
       areaName: string,
