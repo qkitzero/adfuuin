@@ -6,7 +6,14 @@ const VIDEO_SELECTOR = 'video';
 const RELOAD_DELAY_MS = 7000;
 const TIME_TRACKING_INTERVAL_MS = 1000;
 
-export const createYoutubePlayerAdMuter = (serviceKey: string) => {
+interface YoutubePlayerAdMuterOptions {
+  reloadOnAd?: boolean;
+}
+
+export const createYoutubePlayerAdMuter = (
+  serviceKey: string,
+  { reloadOnAd = true }: YoutubePlayerAdMuterOptions = {},
+) => {
   let reloadTimer: number | null = null;
   let lastKnownTime = 0;
   let timeTracker: number | null = null;
@@ -54,6 +61,8 @@ export const createYoutubePlayerAdMuter = (serviceKey: string) => {
     },
     getObserveTarget: () => document.getElementById('movie_player'),
     onAdStart: () => {
+      if (!reloadOnAd) return;
+
       const savedTime = lastKnownTime;
 
       reloadTimer = window.setTimeout(() => {
@@ -69,5 +78,7 @@ export const createYoutubePlayerAdMuter = (serviceKey: string) => {
     },
   });
 
-  startTimeTracking();
+  if (reloadOnAd) {
+    startTimeTracking();
+  }
 };
