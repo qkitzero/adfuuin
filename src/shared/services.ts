@@ -7,6 +7,9 @@ export const SERVICES = [
 
 export type ServiceKey = (typeof SERVICES)[number]['key'];
 
+export const isServiceKey = (value: unknown): value is ServiceKey =>
+  SERVICES.some(({ key }) => key === value);
+
 export type ServiceSettings = Record<ServiceKey, boolean>;
 
 export const DEFAULT_SERVICE_ENABLED = true;

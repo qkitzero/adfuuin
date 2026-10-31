@@ -17,6 +17,10 @@ Adfuuin monitors supported streaming sites for ad playback using DOM observation
 
 Each service can be individually enabled or disabled from the popup UI.
 
+## Stats
+
+The popup shows how much ad time Adfuuin has muted — today, over the last 7 days, or all time — with a breakdown per service. Stats are stored locally and can be reset from the popup.
+
 ## Installation
 
 1. Download the latest `adfuuin-vX.X.X.zip` from the [Releases](https://github.com/qkitzero/adfuuin/releases) page and extract it.
@@ -28,13 +32,13 @@ Each service can be individually enabled or disabled from the popup UI.
 
 Adfuuin requests only one permission:
 
-- **storage** — to save your per-service toggle preferences locally.
+- **storage** — to save your per-service toggle preferences and muted ad stats locally.
 
 Muting, unmuting and reloading the tab where an ad is playing do not require any additional permission.
 
 The extension:
 
-- Stores only boolean on/off settings per service in `chrome.storage.local`.
+- Stores only boolean on/off settings per service and the duration/count of muted ads per service and day in `chrome.storage.local`. Daily stats older than 90 days are removed automatically.
 - Does **not** collect, transmit, or share any user data.
 - Does **not** make any external network requests.
 - Runs content scripts only on matching domains (`youtube.com`, `music.youtube.com`, `twitch.tv`, `open.spotify.com`).
