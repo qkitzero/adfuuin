@@ -6,13 +6,30 @@ import {
   type ServiceKey,
   type ServiceSettings,
 } from '../shared/services';
+import {
+  EMPTY_STATS,
+  formatAdCount,
+  formatDuration,
+  normalizeStats,
+  STATS_STORAGE_KEY,
+  summarizeStats,
+  type Stats,
+  type StatsPeriod,
+} from '../shared/stats';
+import { StatsSummary } from './StatsSummary';
 
 export const Popup = () => {
   const [settings, setSettings] = useState<ServiceSettings>(DEFAULT_SETTINGS);
+  const [stats, setStats] = useState<Stats>(EMPTY_STATS);
+  const [period, setPeriod] = useState<StatsPeriod>('week');
 
   useEffect(() => {
     chrome.storage.local.get(DEFAULT_SETTINGS, (result) => {
       setSettings(result as ServiceSettings);
+    });
+
+    chrome.storage.local.get(STATS_STORAGE_KEY, (result) => {
+      setStats(normalizeStats(result[STATS_STORAGE_KEY]));
     });
 
     const handleStorageChange = (
@@ -20,6 +37,10 @@ export const Popup = () => {
       areaName: string,
     ) => {
       if (areaName !== 'local') return;
+      if (STATS_STORAGE_KEY in changes) {
+        setStats(normalizeStats(changes[STATS_STORAGE_KEY].newValue));
+      }
+      if (!SERVICES.some(({ key }) => key in changes)) return;
       setSettings((prev) => {
         const next = { ...prev };
         for (const { key } of SERVICES) {
@@ -41,9 +62,13 @@ export const Popup = () => {
     void chrome.storage.local.set({ [key]: newValue });
   };
 
+  const periodStats = summarizeStats(stats, period, new Date());
+
   return (
     <div className="p-6 min-w-64 bg-white space-y-4">
       <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Adfuuin</h1>
+
+      <StatsSummary stats={periodStats} period={period} onPeriodChange={setPeriod} />
 
       <ul className="space-y-2">
         {SERVICES.map(({ key, label }) => (
@@ -56,13 +81,19 @@ export const Popup = () => {
                     : 'bg-gray-300'
                 }`}
               />
-              <span
-                className={`text-sm font-medium transition-colors duration-300 ${
-                  settings[key] ? 'text-gray-800' : 'text-gray-400'
-                }`}
-              >
-                {label}
-              </span>
+              <div className="flex flex-col">
+                <span
+                  className={`text-sm font-medium transition-colors duration-300 ${
+                    settings[key] ? 'text-gray-800' : 'text-gray-400'
+                  }`}
+                >
+                  {label}
+                </span>
+                <span className="text-xs text-gray-400 tabular-nums">
+                  {formatDuration(periodStats[key]?.ms ?? 0)} ·{' '}
+                  {formatAdCount(periodStats[key]?.count ?? 0)}
+                </span>
+              </div>
             </div>
             <button
               type="button"

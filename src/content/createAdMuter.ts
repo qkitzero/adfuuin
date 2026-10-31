@@ -27,7 +27,7 @@ export const createAdMuter = (config: AdMuterConfig) => {
 
   const mute = () => {
     if (isMutedByExtension) return;
-    sendMessage({ type: MESSAGE_TYPES.MUTE_TAB });
+    sendMessage({ type: MESSAGE_TYPES.MUTE_TAB, payload: { serviceKey: config.serviceKey } });
     isMutedByExtension = true;
     config.onAdStart?.();
   };
