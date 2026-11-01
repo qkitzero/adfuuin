@@ -38,7 +38,7 @@ export const StatsSummary = ({ stats, period, onPeriodChange }: StatsSummaryProp
             role="tab"
             aria-selected={period === key}
             onClick={() => onPeriodChange(key)}
-            className={`flex-1 rounded-md px-2 py-1 text-xs font-medium transition-colors duration-200 ${
+            className={`flex-1 whitespace-nowrap rounded-md px-2 py-1 text-xs font-medium transition-colors duration-200 ${
               period === key ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500'
             }`}
           >
