@@ -76,6 +76,8 @@ export const createAdMuter = (config: AdMuterConfig) => {
         attributeFilter: ['class'],
       },
     );
+
+    scheduleCheck();
   };
 
   const targetNode = config.getObserveTarget();

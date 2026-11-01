@@ -32,6 +32,28 @@
     {
       "matches": ["*://open.spotify.com/*"],
       "js": ["src/content/spotify.js"]
+    },
+    {
+      "matches": ["*://www.netflix.com/*"],
+      "js": ["src/content/netflix.js"]
+    },
+    {
+      "matches": [
+        "*://*.primevideo.com/*",
+        "*://*.amazon.com/*",
+        "*://*.amazon.co.jp/*",
+        "*://*.amazon.co.uk/*",
+        "*://*.amazon.de/*",
+        "*://*.amazon.fr/*",
+        "*://*.amazon.it/*",
+        "*://*.amazon.es/*",
+        "*://*.amazon.ca/*",
+        "*://*.amazon.com.mx/*",
+        "*://*.amazon.com.br/*",
+        "*://*.amazon.in/*",
+        "*://*.amazon.com.au/*"
+      ],
+      "js": ["src/content/primevideo.js"]
     }
   ]
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   DEFAULT_SERVICE_ENABLED,
   DEFAULT_SETTINGS,
+  isExperimentalService,
   SERVICES,
   type ServiceKey,
   type ServiceSettings,
@@ -65,30 +66,40 @@ export const Popup = () => {
   const periodStats = summarizeStats(stats, period, new Date());
 
   return (
-    <div className="p-6 min-w-64 bg-white space-y-4">
-      <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Adfuuin</h1>
+    <div className="w-80 p-5 bg-white space-y-4">
+      <h1 className="text-xl font-bold text-gray-800 tracking-tight">Adfuuin</h1>
 
       <StatsSummary stats={periodStats} period={period} onPeriodChange={setPeriod} />
 
-      <ul className="space-y-2">
+      <ul className="rounded-xl border border-gray-100 divide-y divide-gray-100">
         {SERVICES.map(({ key, label }) => (
-          <li key={key} className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <li key={key} className="flex items-center justify-between gap-3 px-4 py-2.5">
+            <div className="flex min-w-0 items-center gap-3">
               <div
-                className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                className={`w-2 h-2 shrink-0 rounded-full transition-colors duration-300 ${
                   settings[key]
                     ? 'bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.6)]'
                     : 'bg-gray-300'
                 }`}
               />
-              <div className="flex flex-col">
-                <span
-                  className={`text-sm font-medium transition-colors duration-300 ${
-                    settings[key] ? 'text-gray-800' : 'text-gray-400'
-                  }`}
-                >
-                  {label}
-                </span>
+              <div className="flex min-w-0 flex-col">
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className={`whitespace-nowrap text-sm font-medium transition-colors duration-300 ${
+                      settings[key] ? 'text-gray-800' : 'text-gray-400'
+                    }`}
+                  >
+                    {label}
+                  </span>
+                  {isExperimentalService(key) && (
+                    <span
+                      title="Ad detection for this service has not been confirmed by users yet"
+                      className="shrink-0 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-amber-700"
+                    >
+                      Experimental
+                    </span>
+                  )}
+                </div>
                 <span className="text-xs text-gray-400 tabular-nums">
                   {formatDuration(periodStats[key]?.ms ?? 0)} ·{' '}
                   {formatAdCount(periodStats[key]?.count ?? 0)}
