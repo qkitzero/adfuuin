@@ -14,8 +14,12 @@ Adfuuin monitors supported streaming sites for ad playback using DOM observation
 | **YouTube Music** | Detects `.ad-showing` class on the shared YouTube player. Mutes only (no reload), so your queue is preserved. |
 | **Twitch** | Detects ad-related DOM elements (`video-ad-label`, `ad-countdown-container`, `.ad-showing`). |
 | **Spotify** | Detects ad-related keywords in the document title (e.g. "Advertisement", "Audio Ad"). |
+| **Netflix** (experimental) | Detects the ad info overlay (`ads-info-container`, or an `ads-info-time` countdown) on the player. Pause ads are ignored. |
+| **Prime Video** (experimental) | Waits for the Prime Video player, then detects a visible, non-empty ad timer (`atvwebplayersdk-ad-timer`, `atvwebplayersdk-adtimeindicator-text`). Falls back to overlay text such as "Ad 0:20". |
 
 Each service can be individually enabled or disabled from the popup UI.
+
+Services marked **experimental** are enabled by default, but their detection logic is based on research rather than first-hand testing, so it may not work reliably yet. They are labeled "Experimental" in the popup. Feedback via [Issues](https://github.com/qkitzero/adfuuin/issues) is welcome.
 
 ## Stats
 
@@ -41,4 +45,4 @@ The extension:
 - Stores only boolean on/off settings per service and the duration/count of muted ads per service and day in `chrome.storage.local`. Daily stats older than 90 days are removed automatically.
 - Does **not** collect, transmit, or share any user data.
 - Does **not** make any external network requests.
-- Runs content scripts only on matching domains (`youtube.com`, `music.youtube.com`, `twitch.tv`, `open.spotify.com`).
+- Runs content scripts only on matching domains (`youtube.com`, `music.youtube.com`, `twitch.tv`, `open.spotify.com`, `netflix.com`, `primevideo.com`, and the Amazon stores where Prime Video plays: `amazon.com`, `amazon.co.jp`, `amazon.co.uk`, `amazon.de`, `amazon.fr`, `amazon.it`, `amazon.es`, `amazon.ca`, `amazon.com.mx`, `amazon.com.br`, `amazon.in`, `amazon.com.au`). On Amazon store pages, the script does nothing unless the Prime Video player is open.
