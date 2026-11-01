@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   DEFAULT_SERVICE_ENABLED,
   DEFAULT_SETTINGS,
+  isExperimentalService,
   SERVICES,
   type ServiceKey,
   type ServiceSettings,
@@ -82,13 +83,23 @@ export const Popup = () => {
                 }`}
               />
               <div className="flex flex-col">
-                <span
-                  className={`text-sm font-medium transition-colors duration-300 ${
-                    settings[key] ? 'text-gray-800' : 'text-gray-400'
-                  }`}
-                >
-                  {label}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className={`text-sm font-medium transition-colors duration-300 ${
+                      settings[key] ? 'text-gray-800' : 'text-gray-400'
+                    }`}
+                  >
+                    {label}
+                  </span>
+                  {isExperimentalService(key) && (
+                    <span
+                      title="Ad detection for this service has not been confirmed by users yet"
+                      className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-amber-700"
+                    >
+                      Experimental
+                    </span>
+                  )}
+                </div>
                 <span className="text-xs text-gray-400 tabular-nums">
                   {formatDuration(periodStats[key]?.ms ?? 0)} ·{' '}
                   {formatAdCount(periodStats[key]?.count ?? 0)}
