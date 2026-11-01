@@ -9,6 +9,7 @@ export const SERVICES = [
   { key: 'youtubemusic', label: 'YouTube Music' },
   { key: 'twitch', label: 'Twitch' },
   { key: 'spotify', label: 'Spotify' },
+  { key: 'netflix', label: 'Netflix', experimental: true },
 ] as const satisfies readonly ServiceDefinition[];
 
 export type ServiceKey = (typeof SERVICES)[number]['key'];

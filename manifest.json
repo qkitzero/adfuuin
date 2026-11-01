@@ -32,6 +32,10 @@
     {
       "matches": ["*://open.spotify.com/*"],
       "js": ["src/content/spotify.js"]
+    },
+    {
+      "matches": ["*://www.netflix.com/*"],
+      "js": ["src/content/netflix.js"]
     }
   ]
 }
