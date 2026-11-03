@@ -15,6 +15,8 @@ interface AdMuterConfig {
 const THROTTLE_DELAY_MS = 100;
 const PAGESHOW_CHECK_DELAY_MS = 500;
 
+const mutingServices: ServiceKey[] = [];
+
 export const createAdMuter = (config: AdMuterConfig) => {
   const isEnabled = createServiceToggle(config.serviceKey, (enabled) => {
     config.onEnabledChange?.(enabled);
@@ -27,6 +29,7 @@ export const createAdMuter = (config: AdMuterConfig) => {
 
   const mute = () => {
     if (isMutedByExtension) return;
+    mutingServices.push(config.serviceKey);
     sendMessage({ type: MESSAGE_TYPES.MUTE_TAB, payload: { serviceKey: config.serviceKey } });
     isMutedByExtension = true;
     config.onAdStart?.();
@@ -34,7 +37,11 @@ export const createAdMuter = (config: AdMuterConfig) => {
 
   const unmute = () => {
     if (!isMutedByExtension) return;
-    sendMessage({ type: MESSAGE_TYPES.UNMUTE_TAB });
+    const index = mutingServices.lastIndexOf(config.serviceKey);
+    if (index !== -1) mutingServices.splice(index, 1);
+    if (mutingServices.length === 0) {
+      sendMessage({ type: MESSAGE_TYPES.UNMUTE_TAB });
+    }
     isMutedByExtension = false;
     config.onAdEnd?.();
   };
@@ -103,4 +110,6 @@ export const createAdMuter = (config: AdMuterConfig) => {
       setTimeout(checkForAds, PAGESHOW_CHECK_DELAY_MS);
     }
   });
+
+  return { recheck: scheduleCheck };
 };

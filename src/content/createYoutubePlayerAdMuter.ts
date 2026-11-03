@@ -1,8 +1,10 @@
 import { MESSAGE_TYPES, sendMessage } from '../shared/messages';
 import type { ServiceKey } from '../shared/services';
 import { createAdMuter } from './createAdMuter';
+import { isYoutubeShortsPage, YOUTUBE_NAVIGATE_FINISH_EVENT } from './youtubeShortsPage';
 
-const AD_SELECTOR = '.ad-showing';
+const PLAYER_ID = 'movie_player';
+const AD_SELECTOR = `#${PLAYER_ID}.ad-showing, #${PLAYER_ID} .ad-showing`;
 const VIDEO_SELECTOR = 'video';
 const RELOAD_DELAY_MS = 7000;
 const TIME_TRACKING_INTERVAL_MS = 1000;
@@ -51,6 +53,10 @@ export const createYoutubePlayerAdMuter = (
   const startTimeTracking = () => {
     stopTimeTracking();
     timeTracker = window.setInterval(() => {
+      if (isYoutubeShortsPage()) {
+        lastKnownTime = 0;
+        return;
+      }
       if (document.querySelector(AD_SELECTOR)) return;
       const video = document.querySelector<HTMLVideoElement>(VIDEO_SELECTOR);
       if (video) {
@@ -79,12 +85,13 @@ export const createYoutubePlayerAdMuter = (
     }
   };
 
-  createAdMuter({
+  const { recheck } = createAdMuter({
     serviceKey,
     detectAd: () => {
+      if (isYoutubeShortsPage()) return false;
       return !!document.querySelector(AD_SELECTOR) && !!document.querySelector(VIDEO_SELECTOR);
     },
-    getObserveTarget: () => document.getElementById('movie_player'),
+    getObserveTarget: () => document.getElementById(PLAYER_ID),
     onAdStart: () => {
       if (!reloadOnAd || isInReloadCooldown()) return;
 
@@ -112,4 +119,6 @@ export const createYoutubePlayerAdMuter = (
       }
     },
   });
+
+  document.addEventListener(YOUTUBE_NAVIGATE_FINISH_EVENT, recheck);
 };
