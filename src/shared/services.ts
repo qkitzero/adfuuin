@@ -6,6 +6,7 @@ export interface ServiceDefinition {
 
 export const SERVICES = [
   { key: 'youtube', label: 'YouTube' },
+  { key: 'youtubeshorts', label: 'YouTube Shorts', experimental: true },
   { key: 'youtubemusic', label: 'YouTube Music' },
   { key: 'twitch', label: 'Twitch' },
   { key: 'spotify', label: 'Spotify' },
