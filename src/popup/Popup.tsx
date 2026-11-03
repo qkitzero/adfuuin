@@ -17,6 +17,7 @@ import {
   type Stats,
   type StatsPeriod,
 } from '../shared/stats';
+import { PeriodTabs } from './PeriodTabs';
 import { StatsSummary } from './StatsSummary';
 
 export const Popup = () => {
@@ -66,14 +67,17 @@ export const Popup = () => {
   const periodStats = summarizeStats(stats, period, new Date());
 
   return (
-    <div className="w-80 p-5 bg-white space-y-4">
-      <h1 className="text-xl font-bold text-gray-800 tracking-tight">Adfuuin</h1>
+    <div className="w-[22rem] p-4 bg-white space-y-3">
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl font-bold text-gray-800 tracking-tight">Adfuuin</h1>
+        <PeriodTabs period={period} onPeriodChange={setPeriod} />
+      </div>
 
-      <StatsSummary stats={periodStats} period={period} onPeriodChange={setPeriod} />
+      <StatsSummary stats={periodStats} />
 
       <ul className="rounded-xl border border-gray-100 divide-y divide-gray-100">
         {SERVICES.map(({ key, label }) => (
-          <li key={key} className="flex items-center justify-between gap-3 px-4 py-2.5">
+          <li key={key} className="flex items-center justify-between gap-3 px-4 py-2">
             <div className="flex min-w-0 items-center gap-3">
               <div
                 className={`w-2 h-2 shrink-0 rounded-full transition-colors duration-300 ${
@@ -111,7 +115,7 @@ export const Popup = () => {
               role="switch"
               aria-checked={settings[key]}
               onClick={() => handleToggle(key)}
-              className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-all duration-300 ease-in-out ${
+              className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-all duration-300 ease-in-out ${
                 settings[key]
                   ? 'bg-gradient-to-r from-blue-500 to-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.4)]'
                   : 'bg-gray-200'
@@ -119,7 +123,7 @@ export const Popup = () => {
             >
               <span
                 className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-md transition-all duration-300 ease-in-out ${
-                  settings[key] ? 'translate-x-6 scale-110' : 'translate-x-1 scale-100'
+                  settings[key] ? 'translate-x-[1.375rem]' : 'translate-x-0.5'
                 }`}
               />
             </button>
