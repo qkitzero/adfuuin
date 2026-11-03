@@ -54,6 +54,10 @@
         "*://*.amazon.com.au/*"
       ],
       "js": ["src/content/primevideo.js"]
+    },
+    {
+      "matches": ["*://www.tiktok.com/*"],
+      "js": ["src/content/tiktok.js"]
     }
   ]
 }

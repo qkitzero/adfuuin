@@ -1,21 +1,12 @@
 import { useState } from 'react';
 import { MESSAGE_TYPES, sendMessage } from '../shared/messages';
-import {
-  formatAdCount,
-  formatDuration,
-  STATS_PERIODS,
-  sumStats,
-  type ServiceStats,
-  type StatsPeriod,
-} from '../shared/stats';
+import { formatAdCount, formatDuration, sumStats, type ServiceStats } from '../shared/stats';
 
 interface StatsSummaryProps {
   stats: ServiceStats;
-  period: StatsPeriod;
-  onPeriodChange: (period: StatsPeriod) => void;
 }
 
-export const StatsSummary = ({ stats, period, onPeriodChange }: StatsSummaryProps) => {
+export const StatsSummary = ({ stats }: StatsSummaryProps) => {
   const [isConfirmingReset, setIsConfirmingReset] = useState(false);
   const { ms, count } = sumStats(stats);
 
@@ -29,26 +20,9 @@ export const StatsSummary = ({ stats, period, onPeriodChange }: StatsSummaryProp
   };
 
   return (
-    <section className="rounded-xl bg-gray-50 p-4 space-y-3">
-      <div role="tablist" className="flex gap-1 rounded-lg bg-gray-200/70 p-0.5">
-        {STATS_PERIODS.map(({ key, label }) => (
-          <button
-            key={key}
-            type="button"
-            role="tab"
-            aria-selected={period === key}
-            onClick={() => onPeriodChange(key)}
-            className={`flex-1 whitespace-nowrap rounded-md px-2 py-1 text-xs font-medium transition-colors duration-200 ${
-              period === key ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500'
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      <div>
-        <p className="text-3xl font-bold tracking-tight text-gray-800 tabular-nums">
+    <section className="flex items-end justify-between gap-3 rounded-xl bg-gray-50 px-4 py-3">
+      <div className="min-w-0">
+        <p className="text-2xl font-bold tracking-tight text-gray-800 tabular-nums">
           {formatDuration(ms)}
         </p>
         <p className="text-xs text-gray-500">of ads muted · {formatAdCount(count)}</p>
@@ -58,11 +32,11 @@ export const StatsSummary = ({ stats, period, onPeriodChange }: StatsSummaryProp
         type="button"
         onClick={handleReset}
         onBlur={() => setIsConfirmingReset(false)}
-        className={`text-xs transition-colors duration-200 ${
+        className={`shrink-0 text-xs transition-colors duration-200 ${
           isConfirmingReset ? 'font-medium text-red-500' : 'text-gray-400 hover:text-gray-600'
         }`}
       >
-        {isConfirmingReset ? 'Click again to reset all stats' : 'Reset stats'}
+        {isConfirmingReset ? 'Click again to confirm' : 'Reset all stats'}
       </button>
     </section>
   );
