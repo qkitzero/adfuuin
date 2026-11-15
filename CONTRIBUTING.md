@@ -1,4 +1,4 @@
-# Contributing to Adfuuin
+# Contributing to Auto Mute Ads
 
 Thank you for your interest in contributing! This guide covers everything you need to get started.
 
@@ -12,8 +12,8 @@ Thank you for your interest in contributing! This guide covers everything you ne
 ### Getting Started
 
 ```sh
-git clone https://github.com/qkitzero/adfuuin.git
-cd adfuuin
+git clone https://github.com/qkitzero/auto-mute-ads.git
+cd auto-mute-ads
 npm install
 npm run dev
 ```
