@@ -1,12 +1,12 @@
 {
-  "name": "adfuuin",
+  "name": "auto-mute-ads",
   "version": "1.0.0",
-  "description": "Automatically mutes browser tabs when ads play on streaming platforms",
+  "description": "Mutes the tab while ads play on YouTube, Twitch, Spotify, Netflix, Prime Video and TikTok. No blocking — just silence.",
   "license": "MIT",
-  "homepage": "https://github.com/qkitzero/adfuuin",
+  "homepage": "https://github.com/qkitzero/auto-mute-ads",
   "repository": {
     "type": "git",
-    "url": "https://github.com/qkitzero/adfuuin.git"
+    "url": "https://github.com/qkitzero/auto-mute-ads.git"
   },
   "author": "qkitzero",
   "scripts": {

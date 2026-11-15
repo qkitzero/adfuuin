@@ -29,9 +29,9 @@ jobs:
       - run: |
           VERSION=${GITHUB_REF_NAME}
           cd dist
-          zip -r "../adfuuin-${VERSION}.zip" .
+          zip -r "../auto-mute-ads-${VERSION}.zip" .
 
       - uses: softprops/action-gh-release@v3
         with:
-          files: adfuuin-${{ github.ref_name }}.zip
+          files: auto-mute-ads-${{ github.ref_name }}.zip
           generate_release_notes: true

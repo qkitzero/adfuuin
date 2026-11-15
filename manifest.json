@@ -1,6 +1,6 @@
 {
-  "name": "Adfuuin",
-  "description": "Automatically mutes browser tabs when ads play on streaming platforms",
+  "name": "Auto Mute Ads – YouTube, Twitch, Spotify & more",
+  "description": "Mutes the tab while ads play on YouTube, Twitch, Spotify, Netflix, Prime Video and TikTok. No blocking — just silence.",
   "version": "1.0.0",
   "manifest_version": 3,
   "action": {

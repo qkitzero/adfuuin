@@ -9,7 +9,7 @@ const VIDEO_SELECTOR = 'video';
 const RELOAD_DELAY_MS = 7000;
 const TIME_TRACKING_INTERVAL_MS = 1000;
 const RELOAD_COOLDOWN_MS = 60000;
-const LAST_RELOAD_AT_KEY = 'adfuuin:lastReloadAt';
+const LAST_RELOAD_AT_KEY = 'auto-mute-ads:lastReloadAt';
 
 const getLastReloadAt = () => {
   try {
