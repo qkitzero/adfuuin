@@ -69,7 +69,9 @@ export const Popup = () => {
   return (
     <div className="w-[22rem] p-4 bg-white space-y-3">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-xl font-bold text-gray-800 tracking-tight">Adfuuin</h1>
+        <h1 className="whitespace-nowrap text-base font-bold text-gray-800 tracking-tight">
+          Auto Mute Ads
+        </h1>
         <PeriodTabs period={period} onPeriodChange={setPeriod} />
       </div>
 
